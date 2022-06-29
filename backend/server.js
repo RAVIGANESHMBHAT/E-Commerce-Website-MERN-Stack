@@ -1,10 +1,16 @@
-const app = require('./app')
-const dotenv = require('dotenv')
+const app = require("./app");
+const dotenv = require("dotenv");
 
-dotenv.config({path: 'backend/config/config.env'})
+const connectDatabase = require("./config/database");
 
-const port = process.env.PORT | 3000
+//Config
+dotenv.config({ path: "backend/config/config.env" });
+
+//Connecting to MongoDB database
+connectDatabase();
+
+const port = process.env.PORT | 3000;
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
-})
+  console.log(`Server is running on port ${port}`);
+});
