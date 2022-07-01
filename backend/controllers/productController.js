@@ -16,13 +16,14 @@ module.exports.createProduct = catchAsyncErrors(async (req, res, next) => {
 // Get All Products
 module.exports.getAllProducts = catchAsyncErrors(async (req, res) => {
   const resultsPerPage = 5;
+  const productCount = await Product.countDocuments();
   const apiFeature = new ApiFeatures(Product.find(), req.query)
     .search()
     .filter()
     .pagination(resultsPerPage);
 
   const products = await apiFeature.query;
-  res.status(200).json({ success: true, products });
+  res.status(200).json({ success: true, products, productCount });
 });
 
 // Get Product by ID
