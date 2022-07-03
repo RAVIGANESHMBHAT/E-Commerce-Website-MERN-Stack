@@ -144,7 +144,7 @@ exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-// Update user password
+// Update User Password
 exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req.user.id).select("+password");
 
@@ -161,4 +161,48 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
   await user.save();
 
   sendToken(user, 200, res);
+});
+
+// Update User Profile
+exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+  };
+
+  //I will add cloudinary later
+
+  const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  res.status(200).json({
+    success: true,
+  })
+});
+
+// Get All Users -- Admin
+exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
+  const users = await User.find({})
+
+  res.status(200).json({
+    success: true,
+    users
+  })
+})
+
+// Get single user -- Admin
+exports.getSingleUser = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(new ErrorHandler(`User does not exists with ID: ${req.params.id}`))
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
 });
